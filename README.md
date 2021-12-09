@@ -1,4 +1,4 @@
-# ![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png) GA Capstone Project: Predicting P2P loan default to maximise risk adjusted investment annual return
+# ![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png) GA Capstone Project: Predicting P2P loan default to maximise risk adjusted ROI
 
 
 ### Background
@@ -7,11 +7,13 @@ Peer-to-peer (P2P) lending enables individuals to obtain loans directly from oth
 
 ### Problem Statement
 
-The main object of P2P lenders are individual investors who want to get the best risk-reward return for their investment. Our aim for this project is to help P2P lenders decide on the which loans to invest in their portfolio to obtain the best risk-reward (Sharpe Ratio) returns. 
+The main object of P2P lenders are individual investors who want to get the best risk-reward return for their investment. Our aim for this project is to help P2P lenders decide on the which loans to invest in their portfolio to obtain the best risk-reward (Sharpe Ratio) return. 
 
 ### Datasets
 
 The dataset used is from LendingClub [`LendingClub Website`](https://www.lendingclub.com/). The dataset is extracted from Kaggle and the datad dictionary can be obtained from kaggle as well. [`LendingClub Dataset and Dictionary`](https://www.kaggle.com/ethon0426/lending-club-20072020q1)
+
+### Data Dictionary
 
 <table border="1" class="dataframe">
   <thead>
@@ -164,4 +166,49 @@ The dataset used is from LendingClub [`LendingClub Website`](https://www.lending
     </tr>
   </tbody>
 </table>
+
+
+### Summary of Analysis
+
+During the initial EDA analysis, we noted and took actions for the following:
+
+1. There are features which have null values. We dropped features which have more than 70% null values as we deemded such features with minimal value add to our model. For the rest of the features with null values, we replaced these null values based on our best understanding of the data. For those features with less than 10% null values, we delete those rows instead.
+
+2. There are some forward looking features like next payment date, reocoveries and collection status which we have to delete as we generally will not have these features when selecting the loan for investment.
+
+3. There are features with the wrong data type and thus we have to clean such features and convert to the right data type.
+
+4. For ordinal features, we have to map to its numerical value. For nominal features, we perform one hot encoding.
+
+5. As there are too many features and there are features which are highly correlated with one another, we used PCA to reduce the dimensions to speed up the ML algo without sacrificing much of the explanability. In this case, we retained 90% of the explanability.
+
+6. The dataset is highly inbalanced as it contains more non defaulted loan than defaulted ones. Thus, we will used 'balance' weightage which uses the values of y to automatically adjust weights inversely proportional to class frequencies in the input data. We used gridsearch to select the best hyperparameters for each model selected.
+
+### Model Evaluation
+
+We trained and created 3 models (logistic regression, light GBM classifier, catboost classifier) based on the best hyperparameters for each model. The results for the 3 models are as follows:
+
+|Model|Train AUC|Test AUC|Train_test AUC variance|Train precision|test Precision|Train recall|Test recall
+|---|---|---|---|---|---|---|---|
+|Logistic Regression|0.729|0.731|0.004|0.377|0.377|0.663|0.665
+|CatBoostClassifier|0.735|0.731|0.005|0.373|0.369|0.693|0.687
+|light GBM Classifier|0.735|0.729|0.008|0.371|0.368|0.694|0.689
+
+Based on the model evaluation above, the train and test AUC are very similar and all 3 models generalised quite well (no overfitting) based on the auc variance between the train and test data. 
+
+However, we selected Light GBM Classifier as it is the fastest and has the best recall score (TP/(TP+FN)). We want the best recall score as we aimed to reduce the number of false negative (ie actual defaulted loan but predict as non-default) due to the high cost of false negative (investing in defaulted loan) which will affect our risk adjusted return (sharpe ratio). 
+
+### Business Case
+
+Without a model (baseline), we randomly select 10,000 loans (assuming we want to invest in 10,000 loans in the portfolio) from the test dataset for investment. This selection process was iterated over 1000 times to obtain the annual return distribution, standard deviation and sharpe ratio.
+
+We repeated the above process with the model selected and compare the results as below:
+
+|    |ROI|Standard Deviation|Sharpe Ratio
+|---|---|---|
+|Without model|2.31%|0.2|4.05
+|with model|4.54%|0.14|21.71
+
+From the results above, we can see that investors can significantly increase their risk adjusted annual returns (by around 5 times!) by using the model to select the P2P loans to invest.
+
 
