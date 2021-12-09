@@ -19,7 +19,7 @@ The dataset used is from LendingClub [`LendingClub Website`](https://www.lending
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>LoanStatNew</th>
+      <th>Features</th>
       <th>Description</th>
     </tr>
   </thead>
@@ -192,7 +192,7 @@ We trained and created 3 models (logistic regression, light GBM classifier, catb
 |---|---|---|---|---|---|---|---|
 |Logistic Regression|0.729|0.731|0.004|0.377|0.377|0.663|0.665
 |CatBoostClassifier|0.735|0.731|0.005|0.373|0.369|0.693|0.687
-|light GBM Classifier|0.735|0.729|0.008|0.371|0.368|0.694|0.689
+|Light GBM Classifier|0.735|0.729|0.008|0.371|0.368|0.694|0.689
 
 Based on the model evaluation above, the train and test AUC are very similar and all 3 models generalised quite well (no overfitting) based on the auc variance between the train and test data. 
 
@@ -204,8 +204,8 @@ Without a model (baseline), we randomly select 10,000 loans (assuming we want to
 
 We repeated the above process with the model selected and compare the results as below:
 
-|    |ROI|Standard Deviation|Sharpe Ratio
-|---|---|---|
+|Type|ROI|Standard Deviation|Sharpe Ratio
+|---|---|---|---|
 |Without model|2.31%|0.2|4.05
 |with model|4.54%|0.14|21.71
 
