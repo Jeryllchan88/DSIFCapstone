@@ -3,7 +3,7 @@
 
 ### Background
 
-Peer-to-peer (P2P) lending enables individuals to obtain loans directly from other individuals, cutting out the financial institution as the middleman and this sometimes known as "social lending". One of such companies is LendingClub in United States where connect borrowers directly to investors. Borrowers would fill out an application detailing their credit history, loan details, employment status and other self-reported information by which Lending Club would assign a loan grade reflecting the quality of a loan. Potential investors would be able to view the details of various loan applications and make a final decision to invest in the loan.
+Peer-to-peer (P2P) lending enables individuals to obtain loans directly from other individuals, cutting out the financial institution as the middleman and this sometimes known as "social lending". One of such companies is LendingClub in United States where they connect borrowers directly to investors. Borrowers would fill out an application detailing their credit history, loan details, employment status and other self-reported information by which Lending Club would assign a loan grade reflecting the quality of a loan. Potential investors would be able to view the details of various loan applications and make a final decision to invest in the loan.
 
 ### Problem Statement
 
@@ -11,7 +11,7 @@ The main object of P2P lenders are individual investors who want to get the best
 
 ### Datasets
 
-The dataset used is from LendingClub [`LendingClub Website`](https://www.lendingclub.com/). The dataset is extracted from Kaggle and the datad dictionary can be obtained from kaggle as well. [`LendingClub Dataset and Dictionary`](https://www.kaggle.com/ethon0426/lending-club-20072020q1)
+The dataset used is from LendingClub [`LendingClub Website`](https://www.lendingclub.com/). The dataset is extracted from Kaggle and the data dictionary can be obtained from kaggle as well. [`LendingClub Dataset and Dictionary`](https://www.kaggle.com/ethon0426/lending-club-20072020q1)
 
 ### Data Dictionary
 
@@ -174,7 +174,7 @@ During the initial EDA analysis, we noted and took actions for the following:
 
 1. There are features which have null values. We dropped features which have more than 70% null values as we deemded such features with minimal value add to our model. For the rest of the features with null values, we replaced these null values based on our best understanding of the data. For those features with less than 10% null values, we delete those rows instead.
 
-2. There are some forward looking features like next payment date, reocoveries and collection status which we have to delete as we generally will not have these features when selecting the loan for investment.
+2. There are some forward looking features like next payment date, reocoveries and collection status which we have to delete as we generally will not have these features when selecting the loan for investment and removing these features will help prevent data leakage.
 
 3. There are features with the wrong data type and thus we have to clean such features and convert to the right data type.
 
@@ -200,7 +200,7 @@ However, we selected Light GBM Classifier as it is the fastest and has the best 
 
 ### Business Case
 
-Without a model (baseline), we randomly select 10,000 loans (assuming we want to invest in 10,000 loans in the portfolio) from the test dataset for investment. This selection process was iterated over 1000 times to obtain the annual return distribution, standard deviation and sharpe ratio.
+Without a model (baseline), we randomly selected 10,000 loans (assuming we want to invest in 10,000 loans in the portfolio) from the test dataset for investment. This selection process was iterated over 1000 times to obtain the annual return distribution, standard deviation and sharpe ratio.
 
 We repeated the above process with the model selected and compare the results as below:
 
@@ -211,4 +211,14 @@ We repeated the above process with the model selected and compare the results as
 
 From the results above, we can see that investors can significantly increase their risk adjusted annual returns (by around 5 times!) by using the model to select the P2P loans to invest.
 
+### Conclusion
 
+Due to time and power limitation of a personal latop, there are definitely much more work and improvement which can be done to the model.
+
+1. We can try using longer time period and more features to train the model better. We can also run more grid search to better tune the hyperparameters for each model. 
+
+2.  In this model, we did not take into account how time period will affect the features (such as annual income which will increases over time due to inflation) which are used to train the model. In addition, features such as grading and FICO score are highly dependent on how they are calculated where the methodology might change over time. Thus it will be useful to consider and study all these factors when building the model.
+
+3. Similar to point 1, we can try using external features such as macoeonomic and market data which are known to be great predictor of bond default rate. This can be used to predict loan default as well.
+
+4. Lastly, we should try using time series split and check if the model generalise well with future loans. Afterall, the main purpose of this model is to have the ability to predict future loan default rate.
